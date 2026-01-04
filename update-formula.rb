@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
-# Usage: ./update-formula.rb <formula> <version>
-# Example: ./update-formula.rb hobby 0.1.0
+# Usage: ./update-formula.rb [formula]
+# Without arguments: checks all formulas and updates those with new releases
+# With argument: updates only the specified formula
 #
-# This script downloads release archives and updates the formula with correct SHA256 values.
+# This script checks GitHub for new releases and updates formulas automatically.
 
 require 'open-uri'
 require 'digest'
-require 'fileutils'
+require 'json'
 
 FORMULAS = {
   'hobby' => {
@@ -21,60 +22,126 @@ FORMULAS = {
 
 PLATFORMS = %w[darwin-arm64 darwin-amd64 linux-arm64 linux-amd64]
 
-def main
-  formula_name = ARGV[0]
-  version = ARGV[1]
+def get_local_version(formula_name)
+  formula_path = File.join(__dir__, 'Formula', "#{formula_name}.rb")
+  return nil unless File.exist?(formula_path)
 
-  unless formula_name && version
-    puts "Usage: #{$0} <formula> <version>"
-    puts "Example: #{$0} hobby 0.1.0"
-    exit 1
+  content = File.read(formula_path)
+  match = content.match(/version "([^"]+)"/)
+  match ? match[1] : nil
+end
+
+def get_latest_release(repo)
+  url = "https://api.github.com/repos/#{repo}/releases/latest"
+  begin
+    response = URI.open(url, "Accept" => "application/vnd.github.v3+json").read
+    data = JSON.parse(response)
+    # Remove 'v' prefix if present
+    data['tag_name']&.sub(/^v/, '')
+  rescue OpenURI::HTTPError => e
+    puts "  Error fetching release info: #{e.message}"
+    nil
   end
+end
 
-  config = FORMULAS[formula_name]
-  unless config
-    puts "Unknown formula: #{formula_name}"
-    puts "Available: #{FORMULAS.keys.join(', ')}"
-    exit 1
-  end
-
-  puts "Updating #{formula_name} to version #{version}..."
-
+def download_shas(formula_name, repo, version)
   shas = {}
   PLATFORMS.each do |platform|
-    url = "https://github.com/#{config[:repo]}/releases/download/v#{version}/#{formula_name}-#{platform}.tar.gz"
-    puts "Downloading #{url}..."
+    url = "https://github.com/#{repo}/releases/download/v#{version}/#{formula_name}-#{platform}.tar.gz"
+    puts "  Downloading #{platform}..."
 
     begin
       content = URI.open(url).read
       sha = Digest::SHA256.hexdigest(content)
       shas[platform] = sha
-      puts "  SHA256: #{sha}"
+      puts "    SHA256: #{sha}"
     rescue OpenURI::HTTPError => e
-      puts "  Error: #{e.message}"
-      exit 1
+      puts "    Error: #{e.message}"
+      return nil
     end
   end
+  shas
+end
 
-  # Update formula file
+def update_formula(formula_name, version, shas)
   formula_path = File.join(__dir__, 'Formula', "#{formula_name}.rb")
   content = File.read(formula_path)
 
-  content.gsub!(/version ".*"/, %Q{version "#{version}"})
-  content.gsub!(/sha256 "PLACEHOLDER_DARWIN_ARM64"/, %Q{sha256 "#{shas['darwin-arm64']}"})
-  content.gsub!(/sha256 "PLACEHOLDER_DARWIN_AMD64"/, %Q{sha256 "#{shas['darwin-amd64']}"})
-  content.gsub!(/sha256 "PLACEHOLDER_LINUX_ARM64"/, %Q{sha256 "#{shas['linux-arm64']}"})
-  content.gsub!(/sha256 "PLACEHOLDER_LINUX_AMD64"/, %Q{sha256 "#{shas['linux-amd64']}"})
+  # Update version
+  content.gsub!(/version "[^"]+"/, %Q{version "#{version}"})
 
-  # Also update existing SHA values (for re-runs)
-  content.gsub!(/sha256 "[a-f0-9]{64}"/) do |match|
-    # This is a bit tricky - we need context to know which one to replace
-    match
+  # Update SHA256 values by matching the platform context
+  platforms_map = {
+    'darwin-arm64' => /(\s+url\s+"[^"]*darwin-arm64[^"]*"\s+sha256\s+")[^"]+(")/,
+    'darwin-amd64' => /(\s+url\s+"[^"]*darwin-amd64[^"]*"\s+sha256\s+")[^"]+(")/,
+    'linux-arm64'  => /(\s+url\s+"[^"]*linux-arm64[^"]*"\s+sha256\s+")[^"]+(")/,
+    'linux-amd64'  => /(\s+url\s+"[^"]*linux-amd64[^"]*"\s+sha256\s+")[^"]+(")/
+  }
+
+  platforms_map.each do |platform, regex|
+    content.gsub!(regex, "\\1#{shas[platform]}\\2")
   end
 
   File.write(formula_path, content)
-  puts "\nUpdated #{formula_path}"
-  puts "Don't forget to commit and push!"
+  puts "  Updated #{formula_path}"
+end
+
+def check_and_update(formula_name, config, force_version: nil)
+  puts "\nChecking #{formula_name}..."
+
+  local_version = get_local_version(formula_name)
+  puts "  Local version: #{local_version || 'not found'}"
+
+  if force_version
+    latest_version = force_version
+    puts "  Forcing version: #{latest_version}"
+  else
+    latest_version = get_latest_release(config[:repo])
+    puts "  Latest release: #{latest_version || 'not found'}"
+  end
+
+  return false unless latest_version
+
+  if local_version == latest_version && !force_version
+    puts "  Already up to date."
+    return false
+  end
+
+  puts "  Updating to #{latest_version}..."
+  shas = download_shas(formula_name, config[:repo], latest_version)
+  return false unless shas
+
+  update_formula(formula_name, latest_version, shas)
+  true
+end
+
+def main
+  formula_filter = ARGV[0]
+  force_version = ARGV[1]
+
+  if formula_filter && !FORMULAS.key?(formula_filter)
+    puts "Unknown formula: #{formula_filter}"
+    puts "Available: #{FORMULAS.keys.join(', ')}"
+    exit 1
+  end
+
+  updated = []
+
+  formulas_to_check = formula_filter ? { formula_filter => FORMULAS[formula_filter] } : FORMULAS
+
+  formulas_to_check.each do |name, config|
+    if check_and_update(name, config, force_version: formula_filter ? force_version : nil)
+      updated << name
+    end
+  end
+
+  puts "\n" + "=" * 50
+  if updated.empty?
+    puts "All formulas are up to date."
+  else
+    puts "Updated: #{updated.join(', ')}"
+    puts "Don't forget to commit and push!"
+  end
 end
 
 main
