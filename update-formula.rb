@@ -15,7 +15,7 @@ FORMULAS = {
     binary: 'hobby'
   },
   'glu' => {
-    repo: 'speedata/glu',
+    repo: 'boxesandglue/glu',
     binary: 'glu'
   }
 }
