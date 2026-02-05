@@ -20,7 +20,7 @@ FORMULAS = {
   }
 }
 
-PLATFORMS = %w[darwin-arm64 darwin-amd64 linux-arm64 linux-amd64]
+PLATFORMS = %w[macos-arm64 macos-amd64 linux-arm64 linux-amd64]
 
 def get_local_version(formula_name)
   formula_path = File.join(__dir__, 'Formula', "#{formula_name}.rb")
@@ -72,8 +72,8 @@ def update_formula(formula_name, version, shas)
 
   # Update SHA256 values by matching the platform context
   platforms_map = {
-    'darwin-arm64' => /(\s+url\s+"[^"]*darwin-arm64[^"]*"\s+sha256\s+")[^"]+(")/,
-    'darwin-amd64' => /(\s+url\s+"[^"]*darwin-amd64[^"]*"\s+sha256\s+")[^"]+(")/,
+    'macos-arm64' => /(\s+url\s+"[^"]*macos-arm64[^"]*"\s+sha256\s+")[^"]+(")/,
+    'macos-amd64' => /(\s+url\s+"[^"]*macos-amd64[^"]*"\s+sha256\s+")[^"]+(")/,
     'linux-arm64'  => /(\s+url\s+"[^"]*linux-arm64[^"]*"\s+sha256\s+")[^"]+(")/,
     'linux-amd64'  => /(\s+url\s+"[^"]*linux-amd64[^"]*"\s+sha256\s+")[^"]+(")/
   }

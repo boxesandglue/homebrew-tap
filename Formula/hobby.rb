@@ -6,21 +6,21 @@ class Hobby < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-darwin-arm64.tar.gz"
-      sha256 "a9d7292a910b322192763a97f1f4e03bce516d706f0b4ccfe9d8c21a1a0e6a42"
+      url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-macos-arm64.tar.gz"
+      sha256 "a354531dc1a95e68d508ebb26785c275fb17a54c4b2c4b4ce8c05a5a10d47606"
     else
-      url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-darwin-amd64.tar.gz"
-      sha256 "1c6aa3ee7dfdabbcdbe2abdb2ed9591b1cfddfba04ea9d400906b6bad45aeb4f"
+      url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-macos-amd64.tar.gz"
+      sha256 "1aa43bbcbc98504fd4d4a26b9c4dfee02674b57d33d5d1da87c9f5331d3e664a"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
       url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-linux-arm64.tar.gz"
-      sha256 "e532ceefe0c32159d4487c3d0016546e7ff88ac55d9d0603b356902f24e4c4ed"
+      sha256 "36201b03c859a2b33a249c2c1422cfcbc7342efca9928c911a4e4b3d6b593626"
     else
       url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-linux-amd64.tar.gz"
-      sha256 "2e202b87a49dafcc5132c592f2fc09b9a01923cab3dd68ea7f5b151b479f1324"
+      sha256 "fde1871340046dd5f44748df1b3c2bb4073559937646de2dddaa3acf831cf906"
     end
   end
 
