@@ -1,7 +1,7 @@
 class Hobby < Formula
   desc "Lua scripting tool for SVG vector graphics using Hobby-Knuth curves"
   homepage "https://github.com/boxesandglue/hobby"
-  version "0.0.2"
+  version "0.0.3"
   license "BSD-3-Clause"
 
   on_macos do
