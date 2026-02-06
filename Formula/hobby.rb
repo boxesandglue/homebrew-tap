@@ -1,26 +1,26 @@
 class Hobby < Formula
   desc "Lua scripting tool for SVG vector graphics using Hobby-Knuth curves"
   homepage "https://github.com/boxesandglue/hobby"
-  version "0.0.3"
+  version "0.0.4"
   license "BSD-3-Clause"
 
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-macos-arm64.tar.gz"
-      sha256 "a354531dc1a95e68d508ebb26785c275fb17a54c4b2c4b4ce8c05a5a10d47606"
+      sha256 "13333d798936c043d48e9e9d6849e45eb674714268926c02c6c91c6b6c36438a"
     else
       url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-macos-amd64.tar.gz"
-      sha256 "1aa43bbcbc98504fd4d4a26b9c4dfee02674b57d33d5d1da87c9f5331d3e664a"
+      sha256 "977d48747a0e1ce54f6955f960168d200556447155026841360e1f0295af6633"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
       url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-linux-arm64.tar.gz"
-      sha256 "36201b03c859a2b33a249c2c1422cfcbc7342efca9928c911a4e4b3d6b593626"
+      sha256 "1db9cec86ea7e2df1e177bc90de2b54c135e53f9f60c0d97d40562abfcaf5d6e"
     else
       url "https://github.com/boxesandglue/hobby/releases/download/v#{version}/hobby-linux-amd64.tar.gz"
-      sha256 "fde1871340046dd5f44748df1b3c2bb4073559937646de2dddaa3acf831cf906"
+      sha256 "23fdcff0864e66ab111f4500e7f15559e872391297ab00be7c0e3c75b6868a31"
     end
   end
 
