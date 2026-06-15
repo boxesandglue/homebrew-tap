@@ -1,26 +1,26 @@
 class Glu < Formula
   desc "Lua-based PDF creation tool using boxes and glue"
   homepage "https://github.com/boxesandglue/glu"
-  version "0.0.22"
+  version "0.0.23"
   license "AGPL-3.0"
 
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/boxesandglue/glu/releases/download/v#{version}/glu-macos-arm64.tar.gz"
-      sha256 "b607ed246b7a75901823764cc0babbb8aa560618908ae2ae070c26ff78595bd6"
+      sha256 "ce82b50b5a0c6d5dcc844d9b7d90fd6d4a547daff9c2c3c1f8ee6d941345a12f"
     else
       url "https://github.com/boxesandglue/glu/releases/download/v#{version}/glu-macos-amd64.tar.gz"
-      sha256 "3a7c0d525c27a285fed613b0a1078e7d1284cf95cddadb987345ea5054c46b67"
+      sha256 "b757c67824046bf5a428390ea21766605fe30023cf2c8b9bb486b3ba2dc9d20a"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
       url "https://github.com/boxesandglue/glu/releases/download/v#{version}/glu-linux-arm64.tar.gz"
-      sha256 "1e14a49237066c00a8accd8e228ebbf145df799f2333e77c7bcc3e6b0e22561c"
+      sha256 "30711aece73922888916537c26d657dd670954b17f8851bb563b89aef3aded45"
     else
       url "https://github.com/boxesandglue/glu/releases/download/v#{version}/glu-linux-amd64.tar.gz"
-      sha256 "6f08229f22e6a8e33cd2b53a5af7f8d967d35129d44d5c5ef9fb56631ea4d002"
+      sha256 "b5946411ee6ba21c4e6f25c5896b66013e7df479927e6664bccbcaf264ee24e0"
     end
   end
 
