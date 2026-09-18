@@ -1,26 +1,26 @@
 class Xts < Formula
   desc "XML-based PDF typesetting system"
   homepage "https://github.com/speedata/xts"
-  version "0.0.30"
+  version "0.1.0"
   license "AGPL-3.0"
 
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/speedata/xts/releases/download/v#{version}/xts-macos-arm64.zip"
-      sha256 "663db65b8a54ab1bc56eeeb2faf350ad07e0689dcc927c74c8b9890ff35a3e80"
+      sha256 "0a2edefedfc35e30ff919258129e8414bea9da687295a2f6d9ea9dc243b406ac"
     else
       url "https://github.com/speedata/xts/releases/download/v#{version}/xts-macos-amd64.zip"
-      sha256 "5fa7567228680479553733234bc8fc367c2b77794f5357631f31241796efedec"
+      sha256 "ef6c51244efb6ada9e78262ed3254a5105132f1d5d6bdcc3e7312c33ffaf9f9d"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
       url "https://github.com/speedata/xts/releases/download/v#{version}/xts-linux-arm64.tar.gz"
-      sha256 "0b798e88357f368adcbbfd0e2348d4f7ca81d9d7a294d9f3617ad96a6f99502b"
+      sha256 "86d19c0d9ef1a783e3d3b44b6cdd1d335423ffd34694008e1470b9783df179eb"
     else
       url "https://github.com/speedata/xts/releases/download/v#{version}/xts-linux-amd64.tar.gz"
-      sha256 "3784490dc1ad9c05b46515ba81fa748b2dedc9a13c55fec177bba1335e01bb82"
+      sha256 "363b11be8c9ae18bc843d06fea61b98d001746dc691a3fb30f22088cf548b1e9"
     end
   end
 
