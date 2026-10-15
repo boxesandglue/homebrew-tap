@@ -2,33 +2,27 @@
 
 This tap contains Homebrew formulas for:
 
+- **glu** - Markdown, HTML and Lua to PDF with boxes and glue
+- **xts** - XML-based PDF typesetting system
 - **hobby** - Lua scripting tool for SVG vector graphics using Hobby-Knuth curves
-- **glu** - Lua-based PDF creation tool using boxes and glue
+- **goxslt** - XSLT 3.0 processor written in Go
 
 ## Installation
 
 ```bash
 brew tap boxesandglue/tap
-brew install hobby
 brew install glu
 ```
 
 Or install directly:
 
 ```bash
-brew install boxesandglue/tap/hobby
 brew install boxesandglue/tap/glu
+brew install boxesandglue/tap/xts
+brew install boxesandglue/tap/hobby
+brew install boxesandglue/tap/goxslt
 ```
 
 ## Updating formulas
 
-After creating a new release, update the formula:
-
-1. Download the release archives and compute SHA256:
-   ```bash
-   shasum -a 256 hobby-darwin-arm64.tar.gz
-   ```
-
-2. Update `version` and `sha256` values in `Formula/hobby.rb` or `Formula/glu.rb`
-
-3. Commit and push to this repository
+`rake release` in the glu, xts, hobby and goxslt repositories updates the formula: it writes the new `version` and the SHA256 sums of the release archives into `Formula/<name>.rb`. `rake update_formula[VERSION]` does the same step alone. Commit and push the formula to this repository afterwards.
