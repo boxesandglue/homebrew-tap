@@ -1,7 +1,7 @@
 class Glu < Formula
   desc "Lua-based PDF creation tool using boxes and glue"
   homepage "https://github.com/boxesandglue/glu"
-  version "v0.0.52"
+  version "0.0.52"
   license "AGPL-3.0"
 
   on_macos do
